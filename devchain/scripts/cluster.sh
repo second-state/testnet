@@ -104,22 +104,22 @@ do
   mkdir -p $dir && cd $dir && rm -rf *
 
   # travis node init
-  TRAVIS_NODE="docker run --rm -v $dir:/travis cybermiles/travis:latest node"
+  TRAVIS_NODE="docker run --rm -v $dir:/devchain secondstate/devchain:develop node"
   VM_GENESIS=""
   if [[ "$CHAIN_ID" == "stress" ]]; then
     cp ../../scripts/stress/vm-genesis.json .
-    VM_GENESIS="--vm-genesis /travis/vm-genesis.json"
+    VM_GENESIS="--vm-genesis /devchain/vm-genesis.json"
   elif [[ "$CHAIN_ID" == "staging" ]]; then
-    curl https://raw.githubusercontent.com/CyberMiles/testnet/master/travis/init-staging/vm-genesis.json > ./vm-genesis.json
-    VM_GENESIS="--vm-genesis /travis/vm-genesis.json"
+    curl https://raw.githubusercontent.com/CyberMiles/testnet/master/devchain/init-staging/vm-genesis.json > ./vm-genesis.json
+    VM_GENESIS="--vm-genesis /devchain/vm-genesis.json"
   elif [[ "$CHAIN_ID" == "mainnet" ]]; then
-    curl https://raw.githubusercontent.com/CyberMiles/testnet/master/travis/init-mainnet/vm-genesis.json > ./vm-genesis.json
-    VM_GENESIS="--vm-genesis /travis/vm-genesis.json"
+    curl https://raw.githubusercontent.com/CyberMiles/testnet/master/devchain/init-mainnet/vm-genesis.json > ./vm-genesis.json
+    VM_GENESIS="--vm-genesis /devchain/vm-genesis.json"
   fi
-  `$TRAVIS_NODE init --home /travis --env $CHAIN_ID $VM_GENESIS`
+  `$TRAVIS_NODE init --home /devchain --env $CHAIN_ID $VM_GENESIS`
 
   if [[ $i -le $INST_COUNT ]]; then
-    SEEDS+=("$(${TRAVIS_NODE} show_node_id --home /travis)@node-$i:$TP2PPORT")
+    SEEDS+=("$(${TRAVIS_NODE} show_node_id --home /devchain)@node-$i:$TP2PPORT")
   fi
   # test: replace first non-validator's node_key & priv_validator
   if [[ $i -eq $VALIDATOR_COUNT+1 && "$CHAIN_ID" == "test" ]]; then
@@ -182,12 +182,12 @@ for ((i=$START;i<$VALIDATOR_COUNT;i++)) do
   '(.validators[$IDX | tonumber ]|.address) |= $VAL' \
   node1/config/genesis.json > tmp && mv tmp node1/config/genesis.json
 done
-# set validator's max_amount & shares
+
+# set validator's name
 if [[ "$CHAIN_ID" == "staging" ]]; then
   for ((i=0;i<$VALIDATOR_COUNT;i++)) do
     jq --arg IDX $i --arg VALNAME "val-"$((i+1)) \
-    '(.validators[$IDX | tonumber ]|.max_amount) |= 20000000 | (.validators[$IDX | tonumber ]|.shares) |= 2000000
-    | (.validators[$IDX | tonumber ]|.name) |= $VALNAME | (.validators[$IDX | tonumber]|.comp_rate) |= "11/20"' \
+    '(.validators[$IDX | tonumber ]|.name) |= $VALNAME' \
     node1/config/genesis.json > tmp && mv tmp node1/config/genesis.json
   done
 elif [[ "$CHAIN_ID" == "mainnet" ]]; then
@@ -196,34 +196,15 @@ elif [[ "$CHAIN_ID" == "mainnet" ]]; then
     '(.validators[$IDX | tonumber ]|.name) |= $VALNAME' \
     node1/config/genesis.json > tmp && mv tmp node1/config/genesis.json
   done
-elif [[ "$CHAIN_ID" == "stress" ]]; then
-  for ((i=0;i<$VALIDATOR_COUNT;i++)) do
-    jq --arg IDX $i \
-    '(.validators[$IDX | tonumber ]|.max_amount) |= 100000 | (.validators[$IDX | tonumber ]|.shares) |= 10000' \
-    node1/config/genesis.json > tmp && mv tmp node1/config/genesis.json
-  done
 fi
 
-# set max_vals=4, backup_vals=2 for testnet
-if [[ "$CHAIN_ID" == "testnet" ]]; then
-  jq '(.params.max_vals) |= 4 | (.params.backup_vals) |= 2' \
+# set foundation_address for staging
+if [[ "$CHAIN_ID" == "staging" ]]; then
+  jq '(.params.foundation_address) |= "0xace111260c7e9a2e612e04686f5ad800fc7ca769"' \
   node1/config/genesis.json > tmp && mv tmp node1/config/genesis.json
-# set max_vals=19, backup_vals=5, cal_stake_interval=8640, cal_vp_interval=360, foundation_address= for staging
-elif [[ "$CHAIN_ID" == "staging" ]]; then
-  jq '(.params.max_vals) |= 19 | (.params.backup_vals) |= 5
-  | (.params.cal_stake_interval) |= 8640 | (.params.cal_vp_interval) |= 1
-  | (.params.foundation_address) |= "0xace111260c7e9a2e612e04686f5ad800fc7ca769"' \
-  node1/config/genesis.json > tmp && mv tmp node1/config/genesis.json
-# set max_vals=19, backup_vals=5, cal_stake_interval=8640, cal_vp_interval=360, foundation_address= for mainnet
+# set foundation_address for mainnet
 elif [[ "$CHAIN_ID" == "mainnet" ]]; then
-  jq '(.params.max_vals) |= 19 | (.params.backup_vals) |= 5
-  | (.params.cal_stake_interval) |= 8640 | (.params.cal_vp_interval) |= 1
-  | (.params.foundation_address) |= "0x8C88FED745bd859D5c78A3990C1d35bBBC3C2234"' \
-  node1/config/genesis.json > tmp && mv tmp node1/config/genesis.json
-# set max_vals=5, backup_vals=2, unstake_waiting_period=2, reward_interval=3, cal_stake_interval=60 for stress
-elif [[ "$CHAIN_ID" == "stress" ]]; then
-  jq '(.params.max_vals) |= 5 | (.params.backup_vals) |= 2
-  | (.params.unstake_waiting_period) |= 2 | (.params.cal_vp_interval) |= 3 | (.params.cal_stake_interval) |= 60' \
+  jq '(.params.foundation_address) |= "0x8C88FED745bd859D5c78A3990C1d35bBBC3C2234"' \
   node1/config/genesis.json > tmp && mv tmp node1/config/genesis.json
 fi
 
@@ -249,7 +230,7 @@ rm $BASE_DIR/init/config/node_key.json
 rm $BASE_DIR/init/config/priv_validator.json
 
 # copy to directory nodes
-DEST=$HOME/volumes/testnet/travis/nodes
+DEST=$HOME/volumes/testnet/devchain/nodes
 echo "directory \"$DEST\" will be reset with \"$CHAIN_ID\""
 read -p "Press enter to continue..."
 cd $BASE_DIR

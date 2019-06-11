@@ -32,23 +32,23 @@ services:
       - node-10
 
   node-1:
-    image: cybermiles/travis:latest
+    image: secondstate/devchain:develop
     privileged: true
     container_name: node-1
     volumes:
-      - ~/volumes/testnet/travis/nodes/node1:/travis
-    command: ["node", "start", "--home", "/travis"]
+      - ~/volumes/testnet/devchain/nodes/node1:/devchain
+    command: ["node", "start", "--home", "/devchain"]
     ports:
       - 8545:8545
       - 26656:26656
       - 26657:26657
   node-2:
-    image: cybermiles/travis:latest
+    image: secondstate/devchain:develop
     privileged: true
     container_name: node-2
     volumes:
-      - ~/volumes/testnet/travis/nodes/node2:/travis
-    command: ["node", "start", "--home", "/travis"]
+      - ~/volumes/testnet/devchain/nodes/node2:/devchain
+    command: ["node", "start", "--home", "/devchain"]
     ports:
       - 8555:8545
       - 26666:26656
@@ -56,12 +56,12 @@ services:
     depends_on:
       - node-1
   node-3:
-    image: cybermiles/travis:latest
+    image: secondstate/devchain:develop
     privileged: true
     container_name: node-3
     volumes:
-      - ~/volumes/testnet/travis/nodes/node3:/travis
-    command: ["node", "start", "--home", "/travis"]
+      - ~/volumes/testnet/devchain/nodes/node3:/devchain
+    command: ["node", "start", "--home", "/devchain"]
     ports:
       - 8565:8545
       - 26676:26656
@@ -69,12 +69,12 @@ services:
     depends_on:
       - node-1
   node-4:
-    image: cybermiles/travis:latest
+    image: secondstate/devchain:develop
     privileged: true
     container_name: node-4
     volumes:
-      - ~/volumes/testnet/travis/nodes/node4:/travis
-    command: ["node", "start", "--home", "/travis"]
+      - ~/volumes/testnet/devchain/nodes/node4:/devchain
+    command: ["node", "start", "--home", "/devchain"]
     ports:
       - 8575:8545
       - 26686:26656
@@ -82,12 +82,12 @@ services:
     depends_on:
       - node-1
   node-5:
-    image: cybermiles/travis:latest
+    image: secondstate/devchain:develop
     privileged: true
     container_name: node-5
     volumes:
-      - ~/volumes/testnet/travis/nodes/node5:/travis
-    command: ["node", "start", "--home", "/travis"]
+      - ~/volumes/testnet/devchain/nodes/node5:/devchain
+    command: ["node", "start", "--home", "/devchain"]
     ports:
       - 8585:8545
       - 26696:26656
@@ -95,12 +95,12 @@ services:
     depends_on:
       - node-1
   node-6:
-    image: cybermiles/travis:latest
+    image: secondstate/devchain:develop
     privileged: true
     container_name: node-6
     volumes:
-      - ~/volumes/testnet/travis/nodes/node6:/travis
-    command: ["node", "start", "--home", "/travis"]
+      - ~/volumes/testnet/devchain/nodes/node6:/devchain
+    command: ["node", "start", "--home", "/devchain"]
     ports:
       - 8595:8545
       - 26606:26656
@@ -108,12 +108,12 @@ services:
     depends_on:
       - node-1
   node-7:
-    image: cybermiles/travis:latest
+    image: secondstate/devchain:develop
     privileged: true
     container_name: node-7
     volumes:
-      - ~/volumes/testnet/travis/nodes/node7:/travis
-    command: ["node", "start", "--home", "/travis"]
+      - ~/volumes/testnet/devchain/nodes/node7:/devchain
+    command: ["node", "start", "--home", "/devchain"]
     ports:
       - 8505:8545
       - 26616:26656
@@ -121,12 +121,12 @@ services:
     depends_on:
       - node-1
   node-8:
-    image: cybermiles/travis:latest
+    image: secondstate/devchain:develop
     privileged: true
     container_name: node-8
     volumes:
-      - ~/volumes/testnet/travis/nodes/node8:/travis
-    command: ["node", "start", "--home", "/travis"]
+      - ~/volumes/testnet/devchain/nodes/node8:/devchain
+    command: ["node", "start", "--home", "/devchain"]
     ports:
       - 8515:8545
       - 26626:26656
@@ -134,12 +134,12 @@ services:
     depends_on:
       - node-1
   node-9:
-    image: cybermiles/travis:latest
+    image: secondstate/devchain:develop
     privileged: true
     container_name: node-9
     volumes:
-      - ~/volumes/testnet/travis/nodes/node9:/travis
-    command: ["node", "start", "--home", "/travis"]
+      - ~/volumes/testnet/devchain/nodes/node9:/devchain
+    command: ["node", "start", "--home", "/devchain"]
     ports:
       - 8525:8545
       - 26636:26656
@@ -147,12 +147,12 @@ services:
     depends_on:
       - node-1
   node-10:
-    image: cybermiles/travis:latest
+    image: secondstate/devchain:develop
     privileged: true
     container_name: node-10
     volumes:
-      - ~/volumes/testnet/travis/nodes/node10:/travis
-    command: ["node", "start", "--home", "/travis"]
+      - ~/volumes/testnet/devchain/nodes/node10:/devchain
+    command: ["node", "start", "--home", "/devchain"]
     ports:
       - 8535:8545
       - 26646:26656

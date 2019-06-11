@@ -1,4 +1,6 @@
 node_modules
-travis/nodes
+devchain/nodes
 **/*.swp
-travis/faucet/data
+devchain/faucet/data
+.DS_Store
+test

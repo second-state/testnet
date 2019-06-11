@@ -7,8 +7,7 @@
         "type": "tendermint/PubKeyEd25519",
         "value": "NG/catDcO9W4CA8ayS0H7lilpj3QI4+j49smZyHb0Bw="
       },
-      "power": "1",
-      "shares": 1000,
+      "power": "1000",
       "name": "seed-val-01",
       "address": "0x40aA5f4e4f2d3F00cC133Fbe57AC63974EA430d1",
       "comp_rate": "99/100",
